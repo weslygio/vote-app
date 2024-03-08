@@ -68,28 +68,28 @@ const Home: NextPage = () => {
       <div className="flex items-center flex-col flex-grow my-10">
         <div className="flex flex-row items-center h-12 w-1/2 mb-4 py-2 border-b-2">
           <button
-            className={`rounded-full justify-center w-full h-full hover:bg-base-300 mx-2 ${
-              activeTab === "current" && "bg-base-300"
+            className={`rounded-full justify-center w-full h-full hover:bg-base-300 hover:shadow-md mx-2 ${
+              activeTab === "current" && "bg-base-300 shadow-md"
             }`}
             onClick={() => setActiveTab("current")}
           >
-            <label>Current Votings</label>
+            Current Voting
           </button>
           <button
-            className={`rounded-full justify-center w-full h-full hover:bg-base-300 mx-2 ${
-              activeTab === "upcoming" && "bg-base-300"
+            className={`rounded-full justify-center w-full h-full hover:bg-base-300 hover:shadow-md mx-2 ${
+              activeTab === "upcoming" && "bg-base-300 shadow-md"
             }`}
             onClick={() => setActiveTab("upcoming")}
           >
-            <label>Upcoming Votings</label>
+            Upcoming Voting
           </button>
           <button
-            className={`rounded-full justify-center w-full h-full hover:bg-base-300 mx-2 ${
-              activeTab === "past" && "bg-base-300"
+            className={`rounded-full justify-center w-full h-full hover:bg-base-300 hover:shadow-md mx-2 ${
+              activeTab === "past" && "bg-base-300 shadow-md"
             }`}
             onClick={() => setActiveTab("past")}
           >
-            <label>Past Votings</label>
+            Past Voting
           </button>
         </div>
 

@@ -66,10 +66,19 @@ const Host: NextPage = () => {
 
     voters = voters.filter(isAddress);
 
-    if (!(title && startTime && endTime) || candidates.length === 0 || voters.length === 0) {
+    if (!(title && startTime && endTime) || candidates.length === 0 || voters.length === 0 || startTime >= endTime) {
       notification.error(
         <>
           <p className="font-bold mt-0 mb-1">Please fill in the fields correctly.</p>
+        </>,
+      );
+      return;
+    }
+
+    if (candidates.length < 2) {
+      notification.error(
+        <>
+          <p className="font-bold mt-0 mb-1">At least 2 candidates are required.</p>
         </>,
       );
       return;
@@ -167,7 +176,7 @@ const Host: NextPage = () => {
         </div>
 
         <div className="flex justify-center">
-          <button className="border-2 rounded-full py-1.5 px-3 w-2/3" onClick={handleHost}>
+          <button className="border-2 rounded-full py-1.5 px-3 w-2/3 hover:shadow-md" onClick={handleHost}>
             {isLoading ? (
               <span className="loading loading-spinner loading-sm"></span>
             ) : (

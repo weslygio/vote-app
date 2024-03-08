@@ -14,6 +14,7 @@ type PageProps = {
 const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
   const [selectedCandidate, setSelectedCandidate] = useState<string>("");
   const [status, setStatus] = useState<"current" | "upcoming" | "past" | undefined>(undefined);
+  const [winners, setWinners] = useState<string[]>([]);
 
   const {
     data: voting,
@@ -65,6 +66,24 @@ const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
   }, [voting]);
 
   useEffect(() => {
+    if (candidateVotes && status === "past") {
+      let winners = [candidateVotes[0].candidate];
+      let maxVote = candidateVotes[0].voteCount;
+
+      for (let i = 1; i < candidateVotes.length; i++) {
+        if (candidateVotes[i].voteCount > maxVote) {
+          winners = [candidateVotes[i].candidate];
+          maxVote = candidateVotes[i].voteCount;
+        } else if (candidateVotes[i].voteCount === maxVote) {
+          winners.push(candidateVotes[i].candidate);
+        }
+      }
+
+      setWinners(winners);
+    }
+  }, [candidateVotes, status]);
+
+  useEffect(() => {
     if (isError) {
       notFound();
     }
@@ -103,6 +122,7 @@ const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
                     address={candidateVote.candidate}
                     format="short"
                     value={status === "past" ? Number(candidateVote.voteCount) : undefined}
+                    winner={status === "past" ? winners.includes(candidateVote.candidate) : undefined}
                   />
                 </div>
               </div>
@@ -111,7 +131,7 @@ const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
 
           {status === "current" && canVote && (
             <div className="flex justify-center w-full mt-4">
-              <button className="border-2 rounded-full w-2/3 py-1.5 px-3" onClick={handleVote}>
+              <button className="border-2 rounded-full w-2/3 py-1.5 px-3 hover:shadow-md" onClick={handleVote}>
                 {isLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
                 ) : (

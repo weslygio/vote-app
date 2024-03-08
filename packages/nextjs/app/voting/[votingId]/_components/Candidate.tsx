@@ -11,9 +11,10 @@ type CandidateProps = {
   address?: AddressType;
   format?: "short" | "long";
   value?: number;
+  winner?: boolean;
 };
 
-export const Candidate = ({ address, format, value }: CandidateProps) => {
+export const Candidate = ({ address, format, value, winner }: CandidateProps) => {
   const [ens, setEns] = useState<string | null>();
   const [ensAvatar, setEnsAvatar] = useState<string | null>();
   const [addressCopied, setAddressCopied] = useState(false);
@@ -70,7 +71,7 @@ export const Candidate = ({ address, format, value }: CandidateProps) => {
       </div>
 
       <div className="flex mt-3">
-        <span className={`ml-1.5 text-base font-normal`}>{displayAddress}</span>
+        <span className={`ml-1.5 text-base ${winner && "font-bold"}`}>{displayAddress}</span>
 
         {addressCopied ? (
           <CheckCircleIcon
@@ -97,7 +98,7 @@ export const Candidate = ({ address, format, value }: CandidateProps) => {
 
       {value !== undefined && (
         <div className="flex">
-          <span className="text-base">{value} votes</span>
+          <span className={`text-base ${winner && "font-bold"}`}>{value} votes</span>
         </div>
       )}
     </div>
