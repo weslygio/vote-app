@@ -1,67 +1,132 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
-import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { ArrowRightCircleIcon } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
+import { useScaffoldContractRead } from "~~/hooks/scaffold-eth";
+
+type Voting = {
+  id: number;
+  title: string;
+  hoster: string;
+  startTime: Date;
+  endTime: Date;
+};
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
+  const [votingList, setVotingList] = useState<{ current: Voting[]; upcoming: Voting[]; past: Voting[] }>({
+    current: [],
+    upcoming: [],
+    past: [],
+  });
+  const [activeTab, setActiveTab] = useState<"current" | "upcoming" | "past">("current");
+
+  const { data: rawVotingList } = useScaffoldContractRead({
+    contractName: "Vote",
+    functionName: "getVotingList",
+  });
+
+  useEffect(() => {
+    if (!rawVotingList || rawVotingList.length === 0) {
+      return;
+    }
+
+    const now = Date.now();
+    const currentVotingList: Voting[] = [];
+    const upcomingVotingList: Voting[] = [];
+    const pastVotingList: Voting[] = [];
+
+    rawVotingList.forEach((voting: any) => {
+      const newVoting = {
+        id: Number(voting.id),
+        title: voting.title,
+        hoster: voting.hoster,
+        startTime: new Date(Number(voting.startTime) * 1000),
+        endTime: new Date(Number(voting.endTime) * 1000),
+      };
+
+      if (newVoting.startTime.getTime() > now) {
+        upcomingVotingList.push(newVoting);
+      } else if (newVoting.endTime.getTime() <= now) {
+        pastVotingList.push(newVoting);
+      } else {
+        currentVotingList.push(newVoting);
+      }
+    });
+
+    setVotingList({
+      current: currentVotingList,
+      upcoming: upcomingVotingList,
+      past: pastVotingList,
+    });
+  }, [rawVotingList]);
 
   return (
     <>
-      <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address address={connectedAddress} />
-          </div>
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
+      <div className="flex items-center flex-col flex-grow my-10">
+        <div className="flex flex-row items-center h-12 w-1/2 mb-4 py-2 border-b-2">
+          <button
+            className={`rounded-full justify-center w-full h-full hover:bg-base-300 mx-2 ${
+              activeTab === "current" && "bg-base-300"
+            }`}
+            onClick={() => setActiveTab("current")}
+          >
+            <label>Current Votings</label>
+          </button>
+          <button
+            className={`rounded-full justify-center w-full h-full hover:bg-base-300 mx-2 ${
+              activeTab === "upcoming" && "bg-base-300"
+            }`}
+            onClick={() => setActiveTab("upcoming")}
+          >
+            <label>Upcoming Votings</label>
+          </button>
+          <button
+            className={`rounded-full justify-center w-full h-full hover:bg-base-300 mx-2 ${
+              activeTab === "past" && "bg-base-300"
+            }`}
+            onClick={() => setActiveTab("past")}
+          >
+            <label>Past Votings</label>
+          </button>
         </div>
 
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <BugAntIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
-              <MagnifyingGlassIcon className="h-8 w-8 fill-secondary" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-          </div>
+        <div className="flex-auto w-2/3">
+          <table className="table-auto w-full border-separate border-spacing-x-4 border-spacing-y-3">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Hoster</th>
+                <th>Start</th>
+                <th>End</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {votingList[activeTab] &&
+                votingList[activeTab].map(voting => (
+                  <tr key={voting.id}>
+                    <td>{voting.title}</td>
+                    <td>
+                      <Address address={voting.hoster} format="short"></Address>
+                    </td>
+                    <td className="text-center">
+                      <label className="w-full">{voting.startTime.toLocaleString()}</label>
+                    </td>
+                    <td className="text-center">
+                      <label className="w-full">{voting.endTime.toLocaleString()}</label>
+                    </td>
+                    <td>
+                      <Link href={`/voting/${voting.id}`} passHref>
+                        <ArrowRightCircleIcon className="h-6 w-6" />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </>
