@@ -120,7 +120,7 @@ const Home: NextPage = () => {
                     </td>
                     <td>
                       <Link href={`/voting/${voting.id}`} passHref>
-                        <ArrowRightCircleIcon className="h-6 w-6" />
+                        <ArrowRightCircleIcon className="stroke-accent h-6 w-6" />
                       </Link>
                     </td>
                   </tr>

@@ -95,18 +95,31 @@ const Host: NextPage = () => {
         <h2 className="text-2xl font-bold">Host a Voting</h2>
 
         <div className="my-2">
-          <label className="mr-2">Voting Title</label>
-          <input id="title" type="text" />
+          <label className="mr-2 font-bold">Voting Title</label>
+          <input
+            id="title"
+            type="text"
+            placeholder="Title"
+            className="input focus:outline-none focus:text-gray-400 border-2 border-base-300 bg-base-200 rounded-full text-accent w-2/3 px-2 text-gray-400"
+          />
         </div>
 
         <div className="flex flex-col md:flex-row my-2">
-          <div className="flex-auto mb-2 md:mr-4">
-            <label className="mr-2">Start Time</label>
-            <input id="start-time" type="datetime-local" />
+          <div className="flex-auto mb-2 md:mr-2">
+            <label className="mr-2 font-bold">Start Time</label>
+            <input
+              id="start-time"
+              type="datetime-local"
+              className="input focus:outline-none focus:text-gray-400 border-2 border-base-300 bg-base-200 rounded-full text-accent w-2/3 px-2 text-gray-400"
+            />
           </div>
-          <div className="flex-auto mb-2 md:ml-4">
-            <label className="mr-2">End Time</label>
-            <input id="end-time" type="datetime-local" />
+          <div className="flex-auto mb-2 md:ml-2">
+            <label className="mr-2 font-bold">End Time</label>
+            <input
+              id="end-time"
+              type="datetime-local"
+              className="input focus:outline-none focus:text-gray-400 border-2 border-base-300 bg-base-200 rounded-full text-accent w-2/3 px-2 text-gray-400"
+            />
           </div>
         </div>
 
@@ -118,7 +131,7 @@ const Host: NextPage = () => {
                 return (
                   <tr key={index}>
                     <td>
-                      <div className="flex flex-row border-2 rounded-full my-0.5 px-4 py-0.5">
+                      <div className="flex flex-row border-2 border-base-300 rounded-full my-0.5 px-4 py-0.5">
                         <div className="flex-none w-1/12 text-right pr-1">
                           <label className="font-bold">{index + 1}</label>
                         </div>
@@ -144,12 +157,17 @@ const Host: NextPage = () => {
 
               <tr>
                 <td>
-                  <div className="flex flex-row border-2 rounded-full my-0.5 px-4 py-0.5">
-                    <div className="flex-none w-1/12 text-right pr-1 mr-8">
+                  <div className="flex flex-row border-2 border-base-300 rounded-full my-0.5 px-4 py-0.5">
+                    <div className="flex-none w-1/12 text-right pr-1 mr-7">
                       <label className="font-bold">New</label>
                     </div>
                     <span className="ml-4 mr-2 w-96">
-                      <input id="new-candidate" type="text" placeholder="0x..." className="w-full" />
+                      <input
+                        id="new-candidate"
+                        type="text"
+                        placeholder="0x..."
+                        className="focus:outline-none focus:text-gray-400 border-b-2 border-secondary bg-base-200 text-accent w-full px-1 text-gray-400"
+                      />
                     </span>
                   </div>
                 </td>
@@ -157,7 +175,7 @@ const Host: NextPage = () => {
                 <td>
                   <span className="mx-1 my-0.5 px-2 py-0.5">
                     <button>
-                      <PlusCircleIcon className="text-blue-500 block-inline h-6 w-6" onClick={() => addCandidate()} />
+                      <PlusCircleIcon className="stroke-accent block-inline h-6 w-6" onClick={() => addCandidate()} />
                     </button>
                   </span>
                 </td>
@@ -168,7 +186,11 @@ const Host: NextPage = () => {
 
         <div className="mb-6">
           <label className="text-lg font-bold mb-1">Allowed Voters</label>
-          <textarea id="voters" placeholder="0x..." className="px-2 py-1 mx-2 w-5/6 h-48" />
+          <textarea
+            id="voters"
+            placeholder="0x..."
+            className="px-2 py-1 mx-2 w-5/6 h-48 input focus:outline-none focus:text-gray-400 border-2 border-base-300 bg-base-200 rounded-lg text-accent w-2/3 px-2 text-gray-400"
+          />
         </div>
 
         <div className="flex justify-center my-2">
@@ -176,7 +198,10 @@ const Host: NextPage = () => {
         </div>
 
         <div className="flex justify-center">
-          <button className="border-2 rounded-full py-1.5 px-3 w-2/3 hover:shadow-md" onClick={handleHost}>
+          <button
+            className="border-2 border-base-300 rounded-full py-1.5 px-3 w-2/3 hover:bg-secondary hover:shadow-md"
+            onClick={handleHost}
+          >
             {isLoading ? (
               <span className="loading loading-spinner loading-sm"></span>
             ) : (

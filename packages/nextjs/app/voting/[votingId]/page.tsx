@@ -112,12 +112,14 @@ const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
                 key={candidateVote.candidate}
                 className={`flex flex-col items-center justify-center relative ${
                   status === "past" ? "h-40" : "h-36"
-                } w-auto p-4 border-2 rounded ${status === "current" && canVote && "cursor-pointer hover:bg-gray-200"}`}
+                } w-auto p-4 border-2 border-base-300 rounded ${
+                  status === "current" && canVote && "cursor-pointer hover:bg-base-300 hover:shadow-md"
+                }`}
                 onClick={() => canVote && setSelectedCandidate(candidateVote.candidate)}
               >
                 <div className="absolute top-2 right-2">
                   {status === "current" && selectedCandidate === candidateVote.candidate && (
-                    <CheckCircleIcon className="h-6 w-6" />
+                    <CheckCircleIcon className="stroke-accent h-6 w-6" />
                   )}
                 </div>
                 <div>
@@ -134,7 +136,10 @@ const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
 
           {status === "current" && canVote && (
             <div className="flex justify-center w-full mt-4">
-              <button className="border-2 rounded-full w-2/3 py-1.5 px-3 hover:shadow-md" onClick={handleVote}>
+              <button
+                className="border-2 border-base-300 rounded-full w-2/3 py-1.5 px-3 hover:bg-secondary hover:shadow-md"
+                onClick={handleVote}
+              >
                 {isLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
                 ) : (
