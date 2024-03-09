@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { Candidate } from "./_components/Candidate";
 import { NextPage } from "next";
+import { useAccount } from "wagmi";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
@@ -15,6 +16,8 @@ const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
   const [selectedCandidate, setSelectedCandidate] = useState<string>("");
   const [status, setStatus] = useState<"current" | "upcoming" | "past" | undefined>(undefined);
   const [winners, setWinners] = useState<string[]>([]);
+
+  const { address } = useAccount();
 
   const {
     data: voting,
@@ -35,7 +38,7 @@ const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
   const { data: canVote } = useScaffoldContractRead({
     contractName: "Vote",
     functionName: "canVote",
-    args: [BigInt(Number(params?.votingId) - 1)],
+    args: [BigInt(Number(params?.votingId) - 1), address],
   });
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
@@ -107,10 +110,10 @@ const VotingPage: NextPage<PageProps> = ({ params }: PageProps) => {
             {candidateVotes?.map(candidateVote => (
               <div
                 key={candidateVote.candidate}
-                className={`flex flex-col items-center justify-center relative h-36 w-auto p-4 border-2 rounded ${
-                  status === "current" && "cursor-pointer hover:bg-gray-200"
-                }`}
-                onClick={() => setSelectedCandidate(candidateVote.candidate)}
+                className={`flex flex-col items-center justify-center relative ${
+                  status === "past" ? "h-40" : "h-36"
+                } w-auto p-4 border-2 rounded ${status === "current" && canVote && "cursor-pointer hover:bg-gray-200"}`}
+                onClick={() => canVote && setSelectedCandidate(candidateVote.candidate)}
               >
                 <div className="absolute top-2 right-2">
                   {status === "current" && selectedCandidate === candidateVote.candidate && (

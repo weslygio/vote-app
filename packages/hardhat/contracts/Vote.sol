@@ -130,7 +130,7 @@ contract Vote is Ownable {
         return votes;
     }
 
-    function canVote(uint256 voteNo) public view returns (bool) {
-        return votingDataList[voteNo].status[msg.sender] == VoterStatus.NotVoted;
+    function canVote(uint256 voteNo, address voter) public view returns (bool) {
+        return votingDataList[voteNo].status[voter] == VoterStatus.NotVoted;
     }
 }
